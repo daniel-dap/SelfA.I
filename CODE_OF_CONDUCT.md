@@ -61,7 +61,7 @@ representative at an online or offline event.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at
 danieldap.contact@gmail.com.
-All complaints will be reviewed and investigated promptly and fairly.
+All complaints will be reviewed. As this is a solo-maintained project, response times may vary, and moderation actions will be taken at the maintainer's discretion.
 
 All community leaders are obligated to respect the privacy and security of the
 reporter of any incident.
