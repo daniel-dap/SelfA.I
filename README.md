@@ -37,7 +37,7 @@ Model 2: How dare you?!
 ```
 
 # Warnings
-"Model 1" and "Model 2" are just personas/aliases, not really different models.
-For better results, don't use things like \"You is X.\" in your system prompts; instead, use \"Assistant is X.\" Refer to the assistant in the third person.
-Things like \"-hvs\" don't work.
+"Model 1" and "Model 2" are just personas/aliases, not really different models. Like an lonely actor on a stage conversing with itself and changing characters.
+For better results, don't use things like \"You is X.\" in your system prompts; instead, use \"Assistant is X.\" and refer to the assistant in the third person.
+Things like \"-hvs\" don't work. Use "-h", "-v" and "-s" instead, for example.
 Malformed arguments will not be corrected; please be careful with your arguments and use quotes when needed.
