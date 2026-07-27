@@ -7,7 +7,7 @@ from typing import Literal
 
 import requests
 
-OPTIONS = [{"complete": "--help", "simplified": "-h", "name": "help", "explanation": "prints this message"}, {"complete": "--verbose", "simplified": "-v", "name": "verbose", "explanation": "activates verbose mode that prints more details during execution"}, {"complete": "--save-history", "simplified": "-s", "name": "save history", "explanation": "saves the conversation histories to history1.json and history2.json"}]
+OPTIONS = [{"complete": "--help", "simplified": "-h", "name": "help", "explanation": "prints this message"}, {"complete": "--verbose", "simplified": "-v", "name": "verbose", "explanation": "activates verbose mode that prints more details during execution"}, {"complete": "--save-history", "simplified": "-s", "name": "save history", "explanation": "saves the conversation histories to history1.json and history2.json"}, {"complete": "--no-color", "simplified": "-n", "name": "no color", "explanation": "make the program not generate or show colors in the output"}]
 HELP_MESSAGE = f"SelfA.I: a program designed to make an AI model converse with itself.\nUsage: {sys.argv[0]} [OPTIONS] API MODEL TURNS_NUM INITIAL_MESSAGE [SYSTEM_PROMPT 1] [SYSTEM_PROMPT 2]\n\nOptions:\n{'\n'.join(f'\t{o["name"].capitalize()}: can be enabled with {o["complete"]} or {o["simplified"]}; {o["explanation"]}.' for o in OPTIONS)}\n\nArgs:\n\tAPI: API endpoint URL that will be used; must start with \"http://\" or \"https://\".\n\tMODEL: model to specify for the API.\n\tTURNS_NUM: number of turns that will run. In a turn, Model 2 and Model 1 talk to each other.\n\tINITIAL_MESSAGE: first message (tip: use it to define a main topic, like a human starting a conversation topic; examples: \"Hey, what's up? Let's talk about chess.\"); model 1 will say it to initiate the conversation.\n\nTo configure API keys, please create a file named \".api_key\" in the script's directory and put your raw key inside it."
 
 def quitprog(sig = 0, frame = None, verbose = False) -> None: #generic function to quit the program
@@ -26,6 +26,7 @@ def arg_parser(argv: list[str]) -> dict: #kind of main arg "lexer"
     options = {
         "verbose":  False,
         "savehistory": False,
+        "nocolor": False,
         "API": None,
         "MODEL": None,
         "TURNS_NUM": None,
@@ -52,6 +53,10 @@ def arg_parser(argv: list[str]) -> dict: #kind of main arg "lexer"
     if o := detectopt(2, argv): #save history option detection
         argv.pop(o[1])
         options["savehistory"] = True
+
+    if o := detectopt(3, argv): #no color mode detection
+        argv.pop(o[1])
+        options["nocolor"] = True
 
     argv = [arg for arg in argv if arg not in ["-v", "--verbose", "-h", "--help", "-s", "--save-history"]] #clean duplicated options
 
@@ -171,13 +176,22 @@ model2 = []
 
 if processed_args["SYSTEM_PROMPT1"]:
     model1.append({"role": "system", "content": processed_args["SYSTEM_PROMPT1"]})
-    print(f"\033[38;2;{colors[0][0]};{colors[0][1]};{colors[0][2]}mSystem (to Model 1): {processed_args['SYSTEM_PROMPT1']}\033[0m")
+    if not processed_args["nocolor"]:
+        print(f"\033[38;2;{colors[0][0]};{colors[0][1]};{colors[0][2]}m", end="")
+
+    print(f"System (to Model 1): {processed_args['SYSTEM_PROMPT1']}\033[0m")
 
 if processed_args["SYSTEM_PROMPT2"]:
     model2.append({"role": "system", "content": processed_args["SYSTEM_PROMPT2"]})
-    print(f"\033[38;2;{colors[1][0]};{colors[1][1]};{colors[1][2]}mSystem (to Model 2): {processed_args['SYSTEM_PROMPT2']}\033[0m")
+    if not processed_args["nocolor"]:
+        print(f"\033[38;2;{colors[1][0]};{colors[1][1]};{colors[1][2]}m", end="")
 
-print(f"\033[38;2;{colors[2][0]};{colors[2][1]};{colors[2][2]}mModel 1: {processed_args['INITIAL_MESSAGE'] if processed_args['INITIAL_MESSAGE'] else 'Hello! How are you? Let\'s talk about AIs.'}\033[0m")
+    print(f"System (to Model 2): {processed_args['SYSTEM_PROMPT2']}\033[0m")
+
+if not processed_args["nocolor"]:
+    print(f"\033[38;2;{colors[2][0]};{colors[2][1]};{colors[2][2]}m", end="")
+
+print(f"Model 1: {processed_args['INITIAL_MESSAGE'] if processed_args['INITIAL_MESSAGE'] else 'Hello! How are you? Let\'s talk about AIs.'}\033[0m")
 model1.append({"role": "assistant", "content": (processed_args["INITIAL_MESSAGE"] if processed_args["INITIAL_MESSAGE"] else "Hello! How are you? Let's talk about AIs.")})
 model2.append({"role": "user", "content": (processed_args["INITIAL_MESSAGE"] if processed_args["INITIAL_MESSAGE"] else "Hello! How are you? Let's talk about AIs.")})
 
@@ -186,14 +200,20 @@ print()
 #main loop
 for i in range(processed_args["TURNS_NUM"]):
     print(f"Turn {i+1}.")
-    print(f"\033[38;2;{colors[3][0]};{colors[3][1]};{colors[2][2]}mModel 2: ", end="")
+    if not processed_args["nocolor"]:
+        print(f"\033[38;2;{colors[3][0]};{colors[3][1]};{colors[2][2]}m", end="")
+
+    print(f"Model 2: ", end="")
     response = generate_response(processed_args["API"], model2, processed_args["MODEL"], processed_args["KEY"], processed_args["verbose"])
     print("\033[0m", end="")
 
     model2.append({"role": "assistant", "content": response})
     model1.append({"role": "user", "content": response})
 
-    print(f"\033[38;2;{colors[2][0]};{colors[2][1]};{colors[3][2]}mModel 1: ", end="")
+    if not processed_args["nocolor"]:
+        print(f"\033[38;2;{colors[2][0]};{colors[2][1]};{colors[3][2]}m")
+
+    print(f"Model 1: ", end="")
     response = generate_response(processed_args["API"], model1, processed_args["MODEL"], processed_args["KEY"], processed_args["verbose"])
     print("\033[0m", end="")
 
