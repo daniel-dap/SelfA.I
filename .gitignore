@@ -1,0 +1,7 @@
+.api_key
+.ruff_cache/
+history1.json
+history2.json
+__pycache__/
+.env
+venv/
