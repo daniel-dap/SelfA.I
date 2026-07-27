@@ -18,7 +18,7 @@ $ git clone https://github.com/daniel-dap/SelfA.I.git
 ```
 
 # Usage
-You can use options --verbose (or -v), --save-history (or -s) and/or --help (or -h).
+You can use options --verbose (or -v), --save-history (or -s), --help (or -h) and/or --no-color (or -n).
 The arguments API, MODEL, TURNS_NUM and INITIAL_MESSAGE are mandatory. `SYSTEM_PROMPT 1` and `SYSTEM_PROMPT 2` are optional.
 If you want to use API keys, create a file named .api_key in the same directory as selfai.py and put your raw API key inside it.
 ``` bash
