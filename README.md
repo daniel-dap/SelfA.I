@@ -41,3 +41,5 @@ Model 2: How dare you?!
 For better results, don't use things like \"You is X.\" in your system prompts; instead, use \"Assistant is X.\" and refer to the assistant in the third person.
 Things like \"-hvs\" don't work. Use "-h", "-v" and "-s" instead, for example.
 Malformed arguments will not be corrected; please be careful with your arguments and use quotes when needed.
+
+# ⚠️ THIS PROGRAM HAS BEEN TESTED ONLY WITH MODELS WITHOUT THINKING. ⚠️
